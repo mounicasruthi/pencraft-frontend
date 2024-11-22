@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { setToken } from '../../utils/auth';
+import { useAuth } from "@/context/AuthContext"; 
 import API from '../../utils/api';
 
 export default function LoginPage() {
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const { setAuth } = useAuth();
 
   // const handleLogin = async (e: React.FormEvent) => {
   //   e.preventDefault();
@@ -37,6 +39,18 @@ export default function LoginPage() {
     try {
       const response = await API.post('/auth/login', { email, password });
       setToken(response.data.token);
+      const { token, user } = response.data;
+
+      // Save token and user profile to localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("userProfile", JSON.stringify(user));
+
+      // Update Auth Context
+      setAuth({
+        isLoggedIn: true,
+        profileImage: user.profileImage,
+      });
+
     
       toast.success("Successfully logged in!");
       router.push("/dashboard");
