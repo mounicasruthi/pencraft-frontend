@@ -23,9 +23,7 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     try {
-      // Here you would integrate with your authentication API
-      await API.post('/auth/signup', { email, password });
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
+      await API.post('/auth/signup', {username, email, password });
       toast.success("Account created successfully!");
       router.push("/dashboard");
     } catch (error) {

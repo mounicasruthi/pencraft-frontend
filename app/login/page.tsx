@@ -35,10 +35,9 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Here you would integrate with your authentication API
       const response = await API.post('/auth/login', { email, password });
       setToken(response.data.token);
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
+    
       toast.success("Successfully logged in!");
       router.push("/dashboard");
     } catch (error) {
