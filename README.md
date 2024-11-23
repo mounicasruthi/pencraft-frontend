@@ -35,6 +35,9 @@ The frontend of **Pencraft** is built with **Next.js** and features a responsive
 
 ![image](https://github.com/user-attachments/assets/8617f8aa-1a06-4352-a39e-9472ec4422a2)
 
+![image](https://github.com/user-attachments/assets/1d99744e-9727-44f8-9bc7-efc27027169c)
+
+
 ---
 
 ## Technologies Used
