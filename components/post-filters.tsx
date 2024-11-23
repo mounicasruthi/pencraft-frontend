@@ -15,8 +15,8 @@ import { Search } from "lucide-react";
 import API from "@/utils/api";
 
 interface Author {
-  id: string;
-  name: string;
+  authorId: string;
+  username: string;
 }
 
 export default function PostFilters() {
@@ -34,6 +34,7 @@ export default function PostFilters() {
       setLoadingAuthors(true);
       try {
         const data = await API.get("/authors").then((res) => res.data);
+        console.log("Fetched authors:", data); // Debug log
         setAuthors(data);
       } catch (err) {
         console.error("Error fetching authors:", err);
@@ -43,6 +44,7 @@ export default function PostFilters() {
     };
     fetchAuthors();
   }, []);
+  
 
   const handleAuthorChange = (authorId: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -52,6 +54,9 @@ export default function PostFilters() {
       params.set("author", authorId);
     }
     params.delete("page"); // Reset pagination if any
+
+  console.log("Updated Query Params:", params.toString()); // Debug log
+
     router.push(`/posts?${params.toString()}`);
   };
 
@@ -98,8 +103,8 @@ export default function PostFilters() {
               <SelectItem value="loading" disabled>Loading...</SelectItem>
             ) : (
               authors.map((author) => (
-                <SelectItem key={author.id} value={author.id}>
-                  {author.name}
+                <SelectItem key={author.authorId} value={author.authorId}>
+                  {author.username}
                 </SelectItem>
               ))
             )}
