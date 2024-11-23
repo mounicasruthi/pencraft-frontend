@@ -72,6 +72,16 @@
   }
 }
 
+.prose {
+  --tw-prose-body: #1a202c; /* Dark mode compatible */
+  --tw-prose-headings: #2d3748;
+  --tw-prose-links: #3182ce;
+  --tw-prose-bold: #1a202c;
+  --tw-prose-italic: #4a5568;
+  --tw-prose-code: #f56565;
+}
+
+
 @layer base {
   * {
     @apply border-border;

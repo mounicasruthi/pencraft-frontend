@@ -1,83 +1,29 @@
-// "use client";
-
-// import { useState } from "react";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import { Textarea } from "@/components/ui/textarea";
-// import { toast } from "sonner";
-
-// interface NewPostFormProps {
-//   onSuccess: () => void;
-// }
-
-// export default function NewPostForm({ onSuccess }: NewPostFormProps) {
-//   const [isLoading, setIsLoading] = useState(false);
-
-//   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-//     event.preventDefault();
-//     setIsLoading(true);
-
-//     try {
-//       //  integrate with backend API
-//       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
-//       toast.success("Post created successfully!");
-//       onSuccess();
-//     } catch (error) {
-//       toast.error("Failed to create post. Please try again.");
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   }
-
-//   return (
-//     <form onSubmit={onSubmit} className="space-y-6">
-//       <div className="space-y-2">
-//         <Label htmlFor="title">Title</Label>
-//         <Input
-//           id="title"
-//           placeholder="Enter your post title"
-//           required
-//           disabled={isLoading}
-//         />
-//       </div>
-//       <div className="space-y-2">
-//         <Label htmlFor="content">Content</Label>
-//         <Textarea
-//           id="content"
-//           placeholder="Write your post content here..."
-//           className="min-h-[200px]"
-//           required
-//           disabled={isLoading}
-//         />
-//       </div>
-//       <Button type="submit" disabled={isLoading} className="w-full">
-//         {isLoading ? "Creating..." : "Create Post"}
-//       </Button>
-//     </form>
-//   );
-// }
-
 "use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import API from "@/utils/api"; // Import the reusable API client
+import dynamic from "next/dynamic";
+import API from "@/utils/api";
+import "react-mde/lib/styles/css/react-mde-all.css";
+import Showdown from "showdown";
 
 interface NewPostFormProps {
-  onSuccess: () => void; // Callback after successful post creation
+  onSuccess: () => void;
 }
+
+const ReactMde = dynamic(() => import("react-mde"), { ssr: false });
 
 export default function NewPostForm({ onSuccess }: NewPostFormProps) {
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(""); // Markdown content
+  const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
   const [isLoading, setIsLoading] = useState(false);
 
-  const getToken = () => localStorage.getItem("token"); // Replace with your token retrieval logic
+  const getToken = () => localStorage.getItem("token");
+  const converter = new Showdown.Converter();
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -116,18 +62,38 @@ export default function NewPostForm({ onSuccess }: NewPostFormProps) {
           disabled={isLoading}
         />
       </div>
+
       <div className="space-y-2">
         <Label htmlFor="content">Content</Label>
-        <Textarea
-          id="content"
-          placeholder="Write your post content here..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="min-h-[200px]"
-          required
-          disabled={isLoading}
-        />
+        <div className="border rounded-lg overflow-hidden">
+        <ReactMde
+  value={content}
+  onChange={setContent}
+  selectedTab={selectedTab}
+  onTabChange={setSelectedTab}
+  generateMarkdownPreview={(markdown) =>
+    Promise.resolve(converter.makeHtml(markdown))
+  }
+  minEditorHeight={200}
+  maxEditorHeight={400}
+  toolbarCommands={[
+    ["bold", "italic", "strikethrough"],
+    ["link", "quote", "code"],
+    ["unordered-list", "ordered-list"],
+  ]}
+  classes={{
+    reactMde: "bg-[var(--background)] text-[var(--background)]",
+    textArea: "bg-[var(--background)] text-[var(--foreground)] p-4 rounded-b-lg",
+    toolbar: "bg-[var(--toolbar-bg)] text-[var(--toolbar-text)] p-2 rounded-t-lg",
+    // tab: "hover:bg-primary hover:text-primary-foreground px-4 py-2 rounded-md",
+    // tabSelected: "bg-primary text-primary-foreground px-4 py-2 rounded-md",
+    preview: "bg-[var(--preview-bg)] text-[var(--foreground)] p-6 rounded-md",
+  }}
+/>
+
+        </div>
       </div>
+
       <Button type="submit" disabled={isLoading} className="w-full">
         {isLoading ? "Creating..." : "Create Post"}
       </Button>

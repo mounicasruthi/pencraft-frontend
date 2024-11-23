@@ -61,6 +61,11 @@ export default function UserPosts() {
     );
   }
 
+  
+  const truncateContent = (content: string, length: number) => {
+    return content.length > length ? `${content.slice(0, length)}...` : content;
+  };
+
   return (
     <div className="space-y-6">
       {posts.map((post) => (
@@ -68,7 +73,9 @@ export default function UserPosts() {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <h2 className="text-2xl font-semibold mb-2">{post.title}</h2>
-              <p className="text-muted-foreground mb-4">{post.content}</p>
+              <p className="text-muted-foreground mb-4">
+  {truncateContent(post.content, 150)} {/* 150 characters max */}
+</p>
               <div className="flex items-center gap-4 text-sm">
                 <span className="text-muted-foreground">
                   {formatDistanceToNow(new Date(post.createdAt), {
