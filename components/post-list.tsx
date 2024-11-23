@@ -20,29 +20,22 @@ interface Post {
 }
 
 export default function PostList({ authorId }: { authorId?: string }) {
-  
   const searchParams = useSearchParams();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchPosts = async () => {
-
     setLoading(true);
     setError(null);
 
     const query = searchParams.toString();
 
     try {
-      // const endpoint = authorId ? `/posts?authorId=${authorId}` : "/posts";
-      // const data = await API.get(endpoint).then((res) => res.data);
-      // setPosts(data);
-
       const data = await API.get(`/posts?${query}`).then((res) => res.data);
       setPosts(data);
-
     } catch (error) {
-       console.error("Error fetching posts:", error);
+      console.error("Error fetching posts:", error);
       setError("Failed to load posts. Please try again.");
     } finally {
       setLoading(false);
@@ -64,12 +57,10 @@ export default function PostList({ authorId }: { authorId?: string }) {
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
-  
 
   const truncateContent = (content: string, length: number) => {
     return content.length > length ? `${content.slice(0, length)}...` : content;
   };
-  
 
   return (
     <div className="space-y-6">
@@ -80,8 +71,9 @@ export default function PostList({ authorId }: { authorId?: string }) {
               <div className="flex-1">
                 <h2 className="text-2xl font-semibold mb-2">{post.title}</h2>
                 <p className="text-muted-foreground mb-4">
-  {truncateContent(post.content, 150)} {/* 150 characters max */}
-</p>
+                  {truncateContent(post.content, 150)}{" "}
+                  {/* 150 characters max */}
+                </p>
 
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
@@ -90,9 +82,11 @@ export default function PostList({ authorId }: { authorId?: string }) {
                         <AvatarImage src={post.author.profileImage} />
                       ) : (
                         <AvatarFallback>
-                          {post.author?.username
-                            ? post.author.username[0]
-                            : "?" /* Fallback to "?" */}
+                          {
+                            post.author?.username
+                              ? post.author.username[0]
+                              : "?" /* Fallback to "?" */
+                          }
                         </AvatarFallback>
                       )}
                     </Avatar>

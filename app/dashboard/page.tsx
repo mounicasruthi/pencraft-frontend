@@ -17,19 +17,19 @@ export default function DashboardPage() {
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab) {
-      setActiveTab(tab); // Set the active tab based on the query parameter
+      setActiveTab(tab); 
     }
   }, [searchParams]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userProfile");
-    router.push("/"); // Redirect to homepage
+    router.push("/"); 
   };
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
-    router.push(`/dashboard?tab=${tab}`); // Update the query parameter
+    router.push(`/dashboard?tab=${tab}`); 
   };
 
   return (

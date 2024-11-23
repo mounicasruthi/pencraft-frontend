@@ -20,18 +20,6 @@ export default function LoginPage() {
   const router = useRouter();
   const { setAuth } = useAuth();
 
-  // const handleLogin = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await API.post('/auth/login', { email, password });
-  //     setToken(response.data.token);
-  //     alert('Login successful!');
-  //     router.push('/dashboard');
-  //   } catch (err) {
-  //     alert('Invalid email or password');
-  //   }
-  // };
-
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);

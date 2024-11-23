@@ -31,7 +31,9 @@ export default function Navbar() {
         <div className="flex-1 items-center space-x-4 hidden md:flex">
           <Link
             href="/posts"
-            className={pathname === "/posts" ? "text-primary" : "text-foreground/60"}
+            className={
+              pathname === "/posts" ? "text-primary" : "text-foreground/60"
+            }
           >
             All Posts
           </Link>
@@ -42,13 +44,11 @@ export default function Navbar() {
           <ThemeToggle />
           {isLoggedIn ? (
             <>
-   {/* Create Post Button */}
-   <Link  href="/dashboard?tab=new">
-  
+              {/* Create Post Button */}
+              <Link href="/dashboard?tab=new">
                 <Button>
-              
-                Create Post
-                <PenLine className="ml-2 h-4 w-4" />
+                  Create Post
+                  <PenLine className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
 

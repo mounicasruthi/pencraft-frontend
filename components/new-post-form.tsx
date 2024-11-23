@@ -30,7 +30,6 @@ export default function NewPostForm({ onSuccess }: NewPostFormProps) {
     setIsLoading(true);
 
     try {
-      // Integrate with backend API
       await API.post(
         "/posts",
         { title, content },
@@ -38,8 +37,8 @@ export default function NewPostForm({ onSuccess }: NewPostFormProps) {
       );
 
       toast.success("Post created successfully!");
-      onSuccess(); // Trigger parent callback
-      setTitle(""); // Reset form
+      onSuccess();
+      setTitle("");
       setContent("");
     } catch (error) {
       console.error("Error creating post:", error);
@@ -66,31 +65,31 @@ export default function NewPostForm({ onSuccess }: NewPostFormProps) {
       <div className="space-y-2">
         <Label htmlFor="content">Content</Label>
         <div className="border rounded-lg overflow-hidden">
-        <ReactMde
-  value={content}
-  onChange={setContent}
-  selectedTab={selectedTab}
-  onTabChange={setSelectedTab}
-  generateMarkdownPreview={(markdown) =>
-    Promise.resolve(converter.makeHtml(markdown))
-  }
-  minEditorHeight={200}
-  maxEditorHeight={400}
-  toolbarCommands={[
-    ["bold", "italic", "strikethrough"],
-    ["link", "quote", "code"],
-    ["unordered-list", "ordered-list"],
-  ]}
-  classes={{
-    reactMde: "bg-[var(--background)] text-[var(--background)]",
-    textArea: "bg-[var(--background)] text-[var(--foreground)] p-4 rounded-b-lg",
-    toolbar: "bg-[var(--toolbar-bg)] text-[var(--toolbar-text)] p-2 rounded-t-lg",
-    // tab: "hover:bg-primary hover:text-primary-foreground px-4 py-2 rounded-md",
-    // tabSelected: "bg-primary text-primary-foreground px-4 py-2 rounded-md",
-    preview: "bg-[var(--preview-bg)] text-[var(--foreground)] p-6 rounded-md",
-  }}
-/>
-
+          <ReactMde
+            value={content}
+            onChange={setContent}
+            selectedTab={selectedTab}
+            onTabChange={setSelectedTab}
+            generateMarkdownPreview={(markdown) =>
+              Promise.resolve(converter.makeHtml(markdown))
+            }
+            minEditorHeight={200}
+            maxEditorHeight={400}
+            toolbarCommands={[
+              ["bold", "italic", "strikethrough"],
+              ["link", "quote", "code"],
+              ["unordered-list", "ordered-list"],
+            ]}
+            classes={{
+              reactMde: "bg-[var(--background)] text-[var(--background)]",
+              textArea:
+                "bg-[var(--background)] text-[var(--foreground)] p-4 rounded-b-lg",
+              toolbar:
+                "bg-[var(--toolbar-bg)] text-[var(--toolbar-text)] p-2 rounded-t-lg",
+              preview:
+                "bg-[var(--preview-bg)] text-[var(--foreground)] p-6 rounded-md",
+            }}
+          />
         </div>
       </div>
 

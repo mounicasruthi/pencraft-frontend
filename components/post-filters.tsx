@@ -24,11 +24,12 @@ export default function PostFilters() {
   const searchParams = useSearchParams();
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
-  const [selectedAuthor, setSelectedAuthor] = useState(searchParams.get("author") || "all");
+  const [selectedAuthor, setSelectedAuthor] = useState(
+    searchParams.get("author") || "all"
+  );
   const [authors, setAuthors] = useState<Author[]>([]);
   const [loadingAuthors, setLoadingAuthors] = useState(false);
 
-  // Fetch authors dynamically from the backend
   useEffect(() => {
     const fetchAuthors = async () => {
       setLoadingAuthors(true);
@@ -44,7 +45,6 @@ export default function PostFilters() {
     };
     fetchAuthors();
   }, []);
-  
 
   const handleAuthorChange = (authorId: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -53,9 +53,9 @@ export default function PostFilters() {
     } else {
       params.set("author", authorId);
     }
-    params.delete("page"); // Reset pagination if any
+    params.delete("page");
 
-  console.log("Updated Query Params:", params.toString()); // Debug log
+    console.log("Updated Query Params:", params.toString());
 
     router.push(`/posts?${params.toString()}`);
   };
@@ -68,7 +68,7 @@ export default function PostFilters() {
     } else {
       params.delete("search");
     }
-    params.delete("page"); // Reset pagination if any
+    params.delete("page");
     router.push(`/posts?${params.toString()}`);
   };
 
@@ -100,7 +100,9 @@ export default function PostFilters() {
           <SelectContent>
             <SelectItem value="all">All authors</SelectItem>
             {loadingAuthors ? (
-              <SelectItem value="loading" disabled>Loading...</SelectItem>
+              <SelectItem value="loading" disabled>
+                Loading...
+              </SelectItem>
             ) : (
               authors.map((author) => (
                 <SelectItem key={author.authorId} value={author.authorId}>
