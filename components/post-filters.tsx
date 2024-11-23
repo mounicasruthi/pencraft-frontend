@@ -1,52 +1,76 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import API from "@/utils/api";
 
-const AUTHORS = [
-  { id: 'a1', name: 'Sarah Johnson' },
-  { id: 'a2', name: 'Michael Chen' },
-];
+interface Author {
+  id: string;
+  name: string;
+}
 
 export default function PostFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [search, setSearch] = useState(searchParams.get('search') || '');
+
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [selectedAuthor, setSelectedAuthor] = useState(searchParams.get("author") || "all");
+  const [authors, setAuthors] = useState<Author[]>([]);
+  const [loadingAuthors, setLoadingAuthors] = useState(false);
+
+  // Fetch authors dynamically from the backend
+  useEffect(() => {
+    const fetchAuthors = async () => {
+      setLoadingAuthors(true);
+      try {
+        const data = await API.get("/authors").then((res) => res.data);
+        setAuthors(data);
+      } catch (err) {
+        console.error("Error fetching authors:", err);
+      } finally {
+        setLoadingAuthors(false);
+      }
+    };
+    fetchAuthors();
+  }, []);
 
   const handleAuthorChange = (authorId: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (authorId === 'all') {
-      params.delete('author');
-    } else if (authorId) {
-      params.set('author', authorId);
+    const params = new URLSearchParams(searchParams.toString());
+    if (authorId === "all") {
+      params.delete("author");
+    } else {
+      params.set("author", authorId);
     }
+    params.delete("page"); // Reset pagination if any
     router.push(`/posts?${params.toString()}`);
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams.toString());
     if (search) {
-      params.set('search', search);
+      params.set("search", search);
     } else {
-      params.delete('search');
+      params.delete("search");
     }
+    params.delete("page"); // Reset pagination if any
     router.push(`/posts?${params.toString()}`);
   };
 
   return (
     <div className="mb-8 space-y-4">
       <form onSubmit={handleSearch} className="flex gap-4">
+        {/* Search Bar */}
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
@@ -56,20 +80,29 @@ export default function PostFilters() {
             className="pl-10"
           />
         </div>
+
+        {/* Author Filter */}
         <Select
-          onValueChange={handleAuthorChange}
-          defaultValue={searchParams.get('author') || ''}
+          value={selectedAuthor}
+          onValueChange={(value) => {
+            setSelectedAuthor(value);
+            handleAuthorChange(value);
+          }}
         >
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Filter by author" />
           </SelectTrigger>
           <SelectContent>
-          <SelectItem value="all">All authors</SelectItem>
-            {AUTHORS.map((author) => (
-              <SelectItem key={author.id} value={author.id}>
-                {author.name}
-              </SelectItem>
-            ))}
+            <SelectItem value="all">All authors</SelectItem>
+            {loadingAuthors ? (
+              <SelectItem value="loading" disabled>Loading...</SelectItem>
+            ) : (
+              authors.map((author) => (
+                <SelectItem key={author.id} value={author.id}>
+                  {author.name}
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
       </form>

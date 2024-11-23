@@ -21,7 +21,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const userProfile = JSON.parse(localStorage.getItem("userProfile") || "{}");
+    const userProfileString = localStorage.getItem("userProfile");
+
+    let userProfile: { profileImage?: string } | null = null;
+    if (userProfileString) {
+      try {
+        userProfile = JSON.parse(userProfileString);
+      } catch (err) {
+        console.error("Error parsing userProfile from localStorage:", err);
+        userProfile = null;
+      }
+    }
+
     setAuth({
       isLoggedIn: !!token,
       profileImage: userProfile?.profileImage || null,
